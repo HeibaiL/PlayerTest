@@ -4,21 +4,43 @@ import Video from "./components/Video";
 import Controlers from "./components/Controlers";
 import List from "./components/List";
 
+let videos = [
+  "https://www.youtube.com/watch?v=8nW-IPrzM1g&list=RDBk7RVw3I8eg",
+  "https://www.youtube.com/watch?v=Bk7RVw3I8eg&list=RDBk7RVw3I8eg&start_radio=1",
+  "https://www.youtube.com/watch?v=VdwH3RDRXNM",
+  "https://www.youtube.com/watch?v=S6HZvF-s8KI"
+];
+
 function App() {
-  const [videoRef, changeVideoRef] = useState("");
+  const [videoNum, changeVideoNum] = useState(0);
   const [videoId, changeVideoId] = useState("");
   const [videoMuted, muteVideo] = useState(false);
-  const [nextVideoRef, setNextVideoRef] = useState("");
 
   useEffect(() => {
-    changeVideoId(
-      getVideoId(
-        "https://www.youtube.com/watch?v=Bk7RVw3I8eg&list=RDBk7RVw3I8eg&start_radio=1"
-      )
-    );
-  }, []);
+    changeVideoId(getVideoId(videos[videoNum]));
+  }, [videoNum]);
+
   function getLink(link) {
     changeVideoId(getVideoId(link));
+    videos.push(link);
+  }
+
+  function setNextVideo() {
+    if (videoNum === videos.length - 1) return changeVideoNum(0);
+    return changeVideoNum(videoNum + 1);
+  }
+
+  function onListClick(e) {
+    const { target } = e;
+    target.stopVideo().clearVideo();
+    const { videoUrl } = target.playerInfo;
+
+    let num = videos.findIndex(url => {
+      return url.includes(videoUrl);
+    });
+
+    changeVideoNum(num);
+    changeVideoId(getVideoId(videoUrl));
   }
 
   function getVideoId(ref) {
@@ -35,11 +57,17 @@ function App() {
 
   return (
     <div className="App">
-      <List getVideoId={getVideoId} />
+      <List
+        getVideoId={getVideoId}
+        videos={videos}
+        onListClick={onListClick}
+        getVideoId={getVideoId}
+      />
       <Video
         videoId={videoId}
         videoMuted={videoMuted}
         getVideoId={getVideoId}
+        setNextVideo={setNextVideo}
       />
 
       <Controlers

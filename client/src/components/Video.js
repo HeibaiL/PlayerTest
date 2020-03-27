@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import YouTube from "react-youtube";
 
 const opts = {
@@ -8,7 +8,7 @@ const opts = {
 };
 
 const Video = props => {
-  const { videoMuted, videoId } = props;
+  const { videoMuted, videoId, setNextVideo } = props;
 
   return (
     <div className="video-block">
@@ -17,7 +17,7 @@ const Video = props => {
         className="youtube"
         opts={opts}
         videoId={videoId}
-        onEnd={e => e.target.loadVideoById("6dHjBpN7gCw")}
+        onEnd={() => setNextVideo()}
       />
     </div>
   );
