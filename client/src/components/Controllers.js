@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
-const Controlers = props => {
+const Controllers = props => {
   const [inputValue, changeInputValue] = useState("");
-  const { muteVideo, videoMuted,getLink } = props;
+  const { muteVideo, videoMuted, getLink } = props;
 
   function handleChange(e) {
     const { value } = e.target;
@@ -10,8 +10,8 @@ const Controlers = props => {
   }
 
   return (
-    <div className="controlers">
-      <div className="controlers-buttons">
+    <div className="controllers">
+      <div className="controllers-buttons">
         {videoMuted ? (
           <a
             className="video-off button"
@@ -34,11 +34,11 @@ const Controlers = props => {
           value={inputValue}
           onChange={handleChange}
         ></input>
-        <a className="add button" onClick={() =>getLink(inputValue)}>
+        <a className="add button" onClick={() => getLink(inputValue)}>
           Add Video <i className="fas fa-plus"></i>
         </a>
       </div>
     </div>
   );
 };
-export default Controlers;
+export default Controllers;

@@ -8,7 +8,7 @@ const opts = {
 };
 
 const Video = props => {
-  const { videoMuted, videoId, setNextVideo } = props;
+  const { videoMuted, videoId, setNextVideo, addVideo } = props;
 
   return (
     <div className="video-block">
@@ -18,6 +18,7 @@ const Video = props => {
         opts={opts}
         videoId={videoId}
         onEnd={() => setNextVideo()}
+        onStateChange={e => addVideo(e)}
       />
     </div>
   );

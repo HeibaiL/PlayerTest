@@ -1,30 +1,18 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const graphqlHttp = require("express-graphql");
-const { buildSchema } = require("graphql");
+
+const mongoose = require("mongoose");
+
+const cors = require("cors");
+require("dotenv").config();
+
+const { schema, videoResolver, addVideoResolver } = require("./graphql");
 const PORT = process.env.PORT || 4000;
 
 const app = express();
 
-const videoData = [
-  "https://www.youtube.com/watch?v=LXTyzk2uud0&list=WL&index=7&t=979s",
-  "https://www.youtube.com/watch?v=-1h8HQ6rd5U&t=2s"
-];
-
-const schema = buildSchema(`
-type RootQuery {
-    videos: [String!]!
-
-}
-type RootMutation {
-    addVideo(ref:String):[String!]!
-}
-schema {
-    query: RootQuery
-    mutation:RootMutation
-
-}
-`);
+app.use(cors());
 
 app.use(bodyParser.json());
 
@@ -37,16 +25,17 @@ app.use(
   graphqlHttp({
     schema,
     rootValue: {
-      videos: () => {
-        return videoData;
-      },
-      addVideo: args => {
-         videoData.push(args.ref);
-         return videoData
-      }
+      video: videoResolver,
+      addVideo: addVideoResolver
     },
     graphiql: true
   })
 );
 
+mongoose
+  .connect(process.env.DB_CONNECTON_STRING, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  .then(() => console.log("Connected to db"));
 app.listen(PORT, () => console.log("Server is running on port", PORT));

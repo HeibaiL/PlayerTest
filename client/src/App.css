@@ -31,7 +31,7 @@
   min-height: 450px;
 }
 
-.controlers {
+.controllers {
   width: 50%;
   margin-top: 6vh;
   color: white;
@@ -58,7 +58,7 @@ input {
   border-radius: 10px;
   border: 1px solid white;
 }
-.controlers-buttons {
+.controllers-buttons {
   margin-top: 3vh;
 }
 .mutevideo {
@@ -67,7 +67,6 @@ input {
   position: absolute;
   background-color: black;
 }
-
 .list::-webkit-scrollbar {
   width: 12px;
 }
@@ -88,5 +87,5 @@ input {
 }
 .list-element {
   margin-top: 1vh;
-  padding: 5px 50px;
+  padding: 5px 75px;
 }
