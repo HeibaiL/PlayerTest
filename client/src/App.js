@@ -43,10 +43,11 @@ function App() {
         }
       }`
     };
-    return fetchData(requestBody).then(res => res.json());
+    return fetchData(requestBody)
   }
 
   function fetchData(requestBody) {
+   
     return fetch(endPoint, {
       method: "POST",
       headers: {
@@ -119,6 +120,7 @@ function App() {
   }
 
   function fetchPlaylist() {
+    if (isFetching) return;
     const requestBody = {
       query: `
         query {
@@ -131,14 +133,15 @@ function App() {
       .then(res => res.json())
       .then(res => {
         changeVideoData([].concat(res.data.video));
+        setFetching();
       });
   }
+  console.log("qq")
 
   //add and updates video in DB on video state changes (onPause, onPlay)
 
   function addVideo(e) {
     if (isFetching) return;
-
     const {
       playerInfo,
       playerInfo: { videoData }
@@ -156,10 +159,10 @@ function App() {
         }
       }`
     };
-
-    fetchData(requestBody).then(() => fetchPlaylist());
-
     setFetching();
+    return fetchData(requestBody).then(() => fetchPlaylist());
+
+ 
   }
   function setNextVideo() {
     if (videoNum === videoData.length - 1) return changeVideoNum(0);
@@ -207,9 +210,9 @@ function App() {
           {isTaken ? (
             <div className="taken">
               Sorry, but the player is being used by another user right now. You
-              still can add new videos, tho! 
-              <br/>
-              <br/>
+              still can add new videos, tho!
+              <br />
+              <br />
               Also you can Log Out and try again
             </div>
           ) : (
