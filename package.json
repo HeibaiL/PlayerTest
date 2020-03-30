@@ -16,9 +16,11 @@
     "mongoose": "^5.9.6"
   },
   "devDependencies": {
+    "bcrypt": "^4.0.1",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
+    "jsonwebtoken": "^8.5.1",
     "nodemon": "^2.0.2",
     "react-youtube": "^7.9.0"
   }

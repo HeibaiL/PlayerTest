@@ -1,0 +1,35 @@
+
+@media screen and (max-width: 1024px) {
+  .list-element {
+    padding: 5px 25px;
+  }
+}
+@media screen and (max-width: 768px) {
+  .video-block {
+    max-height:500px;
+    min-width:70vw;
+    right:50%;
+    margin-right:-35vw;
+
+  }
+  .video-block iframe{
+    max-height:500px;
+    width:100%;
+  }
+  .list{
+    top:75%;
+    left:50%;
+    margin-left:-200px;
+    min-width:400px;
+    max-height:200px;
+  }
+  .controllers{
+    max-height:130px;
+    top:60%;
+    min-width:400px;
+    right:50%;
+    margin-right:-200px
+  }
+}
+@media screen and (max-width: 768px) {
+}

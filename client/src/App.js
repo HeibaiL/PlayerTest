@@ -3,6 +3,7 @@ import "./App.css";
 import Video from "./components/Video";
 import Controllers from "./components/Controllers";
 import List from "./components/List";
+import Login from "./components/Login";
 
 const endPoint = "http://localhost:4000/graphql";
 
@@ -12,25 +13,106 @@ function App() {
   const [videoMuted, muteVideo] = useState(false);
   const [isFetching, changeFatching] = useState(false);
   const [videoData, changeVideoData] = useState([]);
+  const [loggedUser, setUser] = useState("");
+  const [isTaken, setTaken] = useState(false);
 
   useEffect(() => {
+    const token = localStorage.getItem("auth-token");
+    if (token) setUser(token);
     fetchPlaylist();
+    window.onbeforeunload = function(e) {
+      e.preventDefault();
+      return deleteViewer();
+    };
   }, []);
 
   useEffect(() => {
-    changeCurrentVideo();
-  }, [videoData, videoNum]);
+    checkViewer();
+  }, [loggedUser]);
+
+  useEffect(() => changeCurrentVideo(), [videoData, videoNum]);
+
+  //you should logOut so another person can use a player
+  function deleteViewer() {
+    if (!loggedUser) return;
+    const requestBody = {
+      query: `
+      mutation{
+        deleteViewer(token:"${loggedUser}"){
+          userId
+        }
+      }`
+    };
+    return fetchData(requestBody).then(res => res.json());
+  }
+
+  function fetchData(requestBody) {
+    return fetch(endPoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(requestBody)
+    });
+  }
 
   function getLink(link) {
-    changeVideoId(getVideoId(link));
+    const id = getVideoId(link);
+
+    let num = videoData.findIndex(data => {
+      const videoId = getVideoId(data.ref);
+      return videoId === id;
+    });
+    changeVideoNum(num);
+    return changeVideoId(getVideoId(link));
+  }
+  function logOut() {
+    localStorage.removeItem("auth-token");
+    deleteViewer();
+    window.location.reload()
+    return setUser("");
+  }
+
+  function checkViewer() {
+    const requestBody = {
+      query: `
+        query {
+          viewer {
+            userId
+          }
+        }`
+    };
+    return fetchData(requestBody)
+      .then(res => res.json())
+      .then(res => {
+        if (res.errors) {
+          return setViewer();
+        } else if (res.data) {
+          return setTaken(true);
+        }
+      });
+  }
+
+  function setViewer() {
+    if (!loggedUser) return;
+    const requestBody = {
+      query: `
+      mutation{
+        setViewer(token:"${loggedUser}"){
+          userId
+        }
+      }`
+    };
+    return fetchData(requestBody).then(res => res.json());
   }
   function changeCurrentVideo() {
-    const data = videoData[videoNum];
+    const data = videoData[videoNum || 0];
     if (data) {
       const id = getVideoId(data.ref);
-      changeVideoId(id);
+      return changeVideoId(id);
     }
   }
+
   function setFetching() {
     changeFatching(true);
     return setTimeout(() => changeFatching(false), 3000);
@@ -45,18 +127,13 @@ function App() {
           }
         }`
     };
-    return fetch(endPoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(requestBody)
-    })
+    return fetchData(requestBody)
       .then(res => res.json())
       .then(res => {
-        return changeVideoData([].concat(res.data.video));
+        changeVideoData([].concat(res.data.video));
       });
   }
+
   //add and updates video in DB on video state changes (onPause, onPlay)
 
   function addVideo(e) {
@@ -80,13 +157,7 @@ function App() {
       }`
     };
 
-    fetch(endPoint, {
-      method: "POST",
-      body: JSON.stringify(requestBody),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    }).then(() => fetchPlaylist());
+    fetchData(requestBody).then(() => fetchPlaylist());
 
     setFetching();
   }
@@ -126,23 +197,39 @@ function App() {
 
   return (
     <div className="App">
-      <List
-        getVideoId={getVideoId}
-        videoData={videoData}
-        onListClick={onListClick}
-      />
-      <Video
-        addVideo={addVideo}
-        videoId={videoId}
-        videoMuted={videoMuted}
-        getVideoId={getVideoId}
-        setNextVideo={setNextVideo}
-      />
-      <Controllers
-        getLink={getLink}
-        muteVideo={muteVideo}
-        videoMuted={videoMuted}
-      />
+      {loggedUser ? (
+        <div className="container">
+          <List
+            getVideoId={getVideoId}
+            videoData={videoData}
+            onListClick={onListClick}
+          />
+          {isTaken ? (
+            <div className="taken">
+              Sorry, but the player is being used by another user right now. You
+              still can add new videos, tho!
+            </div>
+          ) : (
+            <Video
+              addVideo={addVideo}
+              videoId={videoId}
+              videoMuted={videoMuted}
+              getVideoId={getVideoId}
+              setNextVideo={setNextVideo}
+            />
+          )}
+          <Controllers
+            getLink={getLink}
+            muteVideo={muteVideo}
+            videoMuted={videoMuted}
+          />
+        </div>
+      ) : (
+        <Login setUser={setUser} endPoint={endPoint} />
+      )}
+      <a href="/#" className="logOut button" onClick={() => logOut()}>
+        Log Out<i className="fas fa-sign-out-alt"></i>
+      </a>
     </div>
   );
 }

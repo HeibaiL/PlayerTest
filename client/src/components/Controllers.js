@@ -14,6 +14,7 @@ const Controllers = props => {
       <div className="controllers-buttons">
         {videoMuted ? (
           <a
+            href="/#"
             className="video-off button"
             onClick={() => muteVideo(!videoMuted)}
           >
@@ -21,6 +22,7 @@ const Controllers = props => {
           </a>
         ) : (
           <a
+            href="/#"
             className="video-off button"
             onClick={() => muteVideo(!videoMuted)}
           >
@@ -34,7 +36,7 @@ const Controllers = props => {
           value={inputValue}
           onChange={handleChange}
         ></input>
-        <a className="add button" onClick={() => getLink(inputValue)}>
+        <a href="/#" className="add button" onClick={() => getLink(inputValue)}>
           Add Video <i className="fas fa-plus"></i>
         </a>
       </div>

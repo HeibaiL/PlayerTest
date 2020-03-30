@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import YouTube from "react-youtube";
 
 const List = props => {
@@ -13,7 +13,7 @@ const List = props => {
             opts={{ height: "100%", width: "100%" }}
             videoId={id}
             x
-            onPlay={e => props.onListClick(e)}
+            onPlay={e => onListClick(e)}
           />
           ;
         </div>
