@@ -17,6 +17,7 @@ function App() {
   const [isTaken, setTaken] = useState(false);
 
   useEffect(() => {
+
     const token = localStorage.getItem("auth-token");
     if (token) setUser(token);
     fetchPlaylist();
@@ -24,13 +25,17 @@ function App() {
       e.preventDefault();
       return deleteViewer();
     };
+
   }, []);
 
   useEffect(() => {
     checkViewer();
   }, [loggedUser]);
 
-  useEffect(() => changeCurrentVideo(), [videoData, videoNum]);
+  useEffect(() => {
+    changeCurrentVideo()
+  }, [videoData, videoNum]);
+  
 
   //you should logOut so another person can use a player
   function deleteViewer() {
@@ -136,7 +141,6 @@ function App() {
         setFetching();
       });
   }
-  console.log("qq")
 
   //add and updates video in DB on video state changes (onPause, onPlay)
 
