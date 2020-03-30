@@ -69,7 +69,7 @@ function App() {
   function logOut() {
     localStorage.removeItem("auth-token");
     deleteViewer();
-    window.location.reload()
+    window.location.reload();
     return setUser("");
   }
 
@@ -207,7 +207,10 @@ function App() {
           {isTaken ? (
             <div className="taken">
               Sorry, but the player is being used by another user right now. You
-              still can add new videos, tho!
+              still can add new videos, tho! 
+              <br/>
+              <br/>
+              Also you can Log Out and try again
             </div>
           ) : (
             <Video
