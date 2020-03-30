@@ -4,6 +4,7 @@ import Video from "./components/Video";
 import Controllers from "./components/Controllers";
 import List from "./components/List";
 import Login from "./components/Login";
+import { getVideoId, fetchData } from "./helpers"
 
 const endPoint = "http://localhost:4000/graphql";
 
@@ -48,18 +49,7 @@ function App() {
         }
       }`
     };
-    return fetchData(requestBody)
-  }
-
-  function fetchData(requestBody) {
-   
-    return fetch(endPoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(requestBody)
-    });
+    return fetchData(endPoint,requestBody)
   }
 
   function getLink(link) {
@@ -88,7 +78,7 @@ function App() {
           }
         }`
     };
-    return fetchData(requestBody)
+    return fetchData(endPoint,requestBody)
       .then(res => res.json())
       .then(res => {
         if (res.errors) {
@@ -109,8 +99,9 @@ function App() {
         }
       }`
     };
-    return fetchData(requestBody).then(res => res.json());
+    return fetchData(endPoint,requestBody).then(res => res.json());
   }
+
   function changeCurrentVideo() {
     const data = videoData[videoNum || 0];
     if (data) {
@@ -134,7 +125,7 @@ function App() {
           }
         }`
     };
-    return fetchData(requestBody)
+    return fetchData(endPoint,requestBody)
       .then(res => res.json())
       .then(res => {
         changeVideoData([].concat(res.data.video));
@@ -164,7 +155,7 @@ function App() {
       }`
     };
     setFetching();
-    return fetchData(requestBody).then(() => fetchPlaylist());
+    return fetchData(endPoint,requestBody).then(() => fetchPlaylist());
 
  
   }
@@ -184,22 +175,6 @@ function App() {
       return videoId === id;
     });
     changeVideoNum(num);
-  }
-
-  function getVideoId(ref) {
-    if (!ref) return;
-
-    let strId;
-    const startIndex = ref.indexOf("v=") + 2;
-    const endIndex = ref.indexOf("&", startIndex);
-
-    if (endIndex === -1) {
-      return (strId = ref.slice(startIndex));
-    }
-
-    strId = ref.slice(startIndex, endIndex);
-    changeVideoNum(videoData.length);
-    return strId;
   }
 
   return (

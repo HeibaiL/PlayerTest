@@ -3,6 +3,7 @@ import YouTube from "react-youtube";
 
 const List = props => {
   const { videoData, onListClick, getVideoId } = props;
+
   function showList(arr) {
     return arr.map(data => {
       const id = getVideoId(data.ref)
@@ -12,7 +13,6 @@ const List = props => {
           <YouTube
             opts={{ height: "100%", width: "100%" }}
             videoId={id}
-            x
             onPlay={e => onListClick(e)}
           />
           ;
